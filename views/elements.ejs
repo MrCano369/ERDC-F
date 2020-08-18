@@ -1,6 +1,6 @@
-<div class="title">
-    <img src="../public/img/menu.svg" class="btnMenu" onclick="showMenu()"></img>
-    El rincón de Cano
+<div class="header">
+    <img src="../public/img/menu.svg" height="30" class="btnMenu" onclick="showMenu()"></img>
+    <h1>El rincón de Cano</h1>
 </div>
 <div class="footer">
     <img src="../public/img/ikaros.png" height="100%" id="ikaros">
@@ -9,7 +9,6 @@
 
 <div id="nada" onclick="quitarMenu()"></div>
 <div id="menu">
-    <hr>
     <div class="item">
         <% if(user){ %>
         <a><%= user.nombre %></a>
@@ -17,7 +16,7 @@
         <a href="/salir">Salir</a>
         <% }else{ %>
             <a>Sin usuario</a>
-            <a href="/login">Iniciar sesión</a>
+            <a href="/">Iniciar sesión</a>
             <a href="/registro">Registrarme</a>
         <% } %>
     </div>

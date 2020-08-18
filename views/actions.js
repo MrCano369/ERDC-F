@@ -37,19 +37,12 @@ function toFurigana(str){
     return str.replace('(', '<f><h>').replace(',', '</h>').replace(')', '</f>');
 }
 function showMenu(){
-    if(menu.style.transform != 'translateY(0px)'){
-        menu.style.transform = 'translateY(0px)';
-        nada.style.display = 'block';
-    } 
-    else{
-        menu.style.transform = 'translateY(-500px)';
-        nada.style.display = 'none';
-    } 
-    
-    //document.body.style.overflowY = 'hidden';
+    menu.style.transform = 'translateX(0px)';
+    nada.style.display = 'block';
+    document.body.style.overflowY = 'hidden';
 }
 function quitarMenu(){
-    menu.style.transform = 'translateY(-500px)';
+    menu.style.transform = 'translateX(-200px)';
     nada.style.display = 'none';
-    //document.body.style.overflowY = 'auto';
+    document.body.style.overflowY = 'auto';
 }
