@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="../public/style.css">
+    <title>Inicio de sesión</title>
+</head>
+<body>
+    
+    <%- include('elements', { user }) %>
+
+    <div class="page">
+        <h2>Inicio de sesión</h2>
+
+        <form id="frm">
+            <p>Nombre de usuario</p>
+            <input type="text" name="nombre" required>
+            <p>Contraseña</p>
+            <input type="password" name="clave" required>
+            <button>Acceder</button>
+        </form>
+    </div>
+    
+</body>
+</html>
+<script src="../views/actions.js"></script>
+<script>
+    colaMsg.add('Introduzca sus datos por favor.');
+
+    frm.addEventListener('submit', e => {
+        e.preventDefault();
+        msgBox.innerHTML = 'Cargando...';
+
+        fetch('/login', {
+            method: 'POST',
+            body: JSON.stringify(Object.fromEntries(new FormData(frm))),
+            headers: { 'content-type': "application/json" }
+        })
+        .then(e => e.text()).then(data => {
+            switch(data){
+                case '1':
+                    colaMsg.add('El usuario no existe.');
+                    frm.nombre.value = '';
+                    frm.nombre.focus();
+                break;
+                case '2':
+                    colaMsg.add('Contraseña incorrecta.');
+                    frm.clave.value = '';
+                    frm.clave.focus();
+                break;
+                case 'ok':
+                    location.href = '/inicio';
+                break;
+            }
+        });
+    });
+</script>

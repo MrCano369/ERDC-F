@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="../public/style.css">
+    <title>Inicio de sesión</title>
+</head>
+<body>
+    
+    <div class="header">
+        <img src="../public/img/menu.svg" height="30" class="btnMenu" onclick="showMenu()"></img>
+        <h1>El rincón de Cano</h1>
+    </div>
+    <div class="footer">
+        <img src="../public/img/ikaros.png" height="100%" id="ikaros">
+        <p id="msgBox">Hola.</p>
+    </div>
+    
+    <div id="nada" onclick="quitarMenu()"></div>
+    <!-- <div id="menu">
+        <hr>
+        <div class="item">
+            <a>Sin usuario</a>
+            <a href="/login">Iniciar sesión</a>
+            <a href="/registro">Registrarme</a>
+        </div>
+        <div class="item">
+            <a href="/">Inicio</a>
+        </div>
+        <div class="item">
+            <a>Juegos</a>
+            <a>Ruleta diaria</a>
+            <a>Chavalión</a>
+        </div>
+        <div class="item">
+            <a>Fichero</a>
+            <a href="/agregarFicha">Agregar</a>
+            <a href="/buscarFicha">Buscar</a>
+            <a>Practicar</a>
+        </div>
+        <div class="item">
+            <a>Chat</a>
+        </div>
+    </div> -->
+
+    <div class="page">
+        <h2>Inicio de sesión</h2>
+
+        <form id="frm">
+            <p>Nombre de usuario</p>
+            <input type="text" name="nombre" required>
+            <p>Contraseña</p>
+            <input type="password" name="clave" required>
+            <button>Acceder</button>
+            <p>Si no tienes cuenta <a href="/registo">regístrate</a>.</p>
+        </form>
+    </div>
+    
+</body>
+</html>
+<script src="../views/actions.js"></script>
+<script>
+    colaMsg.add('Introduzca sus datos por favor.');
+
+    frm.addEventListener('submit', e => {
+        e.preventDefault();
+        msgBox.innerHTML = 'Cargando...';
+
+        fetch('/login', {
+            method: 'POST',
+            body: JSON.stringify(Object.fromEntries(new FormData(frm))),
+            headers: { 'content-type': "application/json" }
+        })
+        .then(e => e.text()).then(data => {
+            switch(data){
+                case '1':
+                    colaMsg.add('El usuario no existe.');
+                    frm.nombre.value = '';
+                    frm.nombre.focus();
+                break;
+                case '2':
+                    colaMsg.add('Contraseña incorrecta.');
+                    frm.clave.value = '';
+                    frm.clave.focus();
+                break;
+                case 'ok':
+                    location.href = '/inicio';
+                break;
+            }
+        });
+    });
+</script>

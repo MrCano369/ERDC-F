@@ -1,0 +1,42 @@
+<div class="title">
+    <img src="../public/img/menu.svg" class="btnMenu" onclick="showMenu()"></img>
+    El rincón de Cano
+</div>
+<div class="footer">
+    <img src="../public/img/ikaros.png" height="100%" id="ikaros">
+    <p id="msgBox">Hola.</p>
+</div>
+
+<div id="nada" onclick="quitarMenu()"></div>
+<div id="menu">
+    <hr>
+    <div class="item">
+        <% if(user){ %>
+        <a><%= user.nombre %></a>
+        <a>Mi perfil</a>
+        <a href="/salir">Salir</a>
+        <% }else{ %>
+            <a>Sin usuario</a>
+            <a href="/login">Iniciar sesión</a>
+            <a href="/registro">Registrarme</a>
+        <% } %>
+    </div>
+    <div class="item">
+        <a href="/">Inicio</a>
+    </div>
+    <div class="item">
+        <a>Juegos</a>
+        <a>Ruleta diaria</a>
+        <a>Chavalión</a>
+        <!-- <p>Battle City Ultra</p> -->
+    </div>
+    <div class="item">
+        <a>Fichero</a>
+        <a href="/agregarFicha">Agregar</a>
+        <a href="/buscarFicha">Buscar</a>
+        <a>Practicar</a>
+    </div>
+    <div class="item">
+        <a>Chat</a>
+    </div>
+</div>
