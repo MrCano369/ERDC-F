@@ -107,4 +107,9 @@ app.post('/buscar', async (req, res) => {
     res.send(query);
 });
 
+app.post('/borrar', async (req, res) => {
+    console.log(req.body);
+    res.send('pene');
+});
+
 app.listen(process.env.PORT || 3000, () => console.log('Server funcionando'));

@@ -32,7 +32,7 @@
         
         #tbl tr:hover{
             cursor: pointer;
-            filter: brightness(0.9);
+            /* filter: brightness(0.9); */
         }
 
         form button{
@@ -62,13 +62,58 @@
             top: 0px;
             left: 0px;
             display: none;
-            align-items: center;
-            justify-content: center;
         }
-        #tarjeta{
+        .sus div{border-color: #8E44AD;}
+        .sus div h{color: #8E44AD;}
+        .vrb div{border-color: #2ECC71;}
+        .vrb div h{color: #2ECC71;}
+        .adj div{border-color: #F4D03F;}
+        .adj div h{color: #F4D03F;}
+        .adv div{border-color: #2980B9;}
+        .adv div h{color: #2980B9;}
+        .fra div{border-color: #DC7633;}
+        .fra div h{color: #DC7633;}
+        .tarjeta{
             width: 300px;
             height: 200px;
+            
+            transform-style: preserve-3d;
+            font-size: 35px;
+            /* display: block; */
+            transition: 1s;
+            display: none;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+        }
+        .tarjeta div{
+            width: 100%;
+            height: 100%;
+    
+            display: flex;
+            justify-content: space-between;
+            align-content: space-between;
+            flex-wrap: wrap;
+    
+            border-width: 10px;
+            border-radius: 25px;
+            border-style: outset;
+    
+            padding: 7px;
             background-color: white;
+            position: absolute;
+        }
+        .tarjeta div label{
+            width: 100%;
+            text-align: center;
+        }
+        .tarjeta div img{
+            height: 25px;
+            cursor: pointer;
+            user-select: none;
         }
         </style>
     <title>Buscar Ficha</title>
@@ -79,7 +124,16 @@
     <div class="page">
 
         <div id="fondo">
-            <div id="tarjeta"></div>
+        </div>
+
+        <div class="tarjeta" id="card">
+            <div>
+                <img src="../public/img/girar.png" id="btnGirar">
+                <img src="" id="nivel">
+                <img src="../public/img/editar.svg" id="btnEditar">
+                <label id="txtEsp"></label>
+                <img src="../public/img/borrar.svg" id="btnBorrar">
+            </div>
         </div>
 
         <h2>Buscar Ficha</h2>
@@ -87,7 +141,7 @@
         <div class="content">
             
             <form id="frm">
-                <input type="text" name="buscar">
+                <input type="text" name="buscar" value="po">
                 <button><img src="../public/img/buscar.svg" height="20"></button>
                 <p><span id="cant">0</span> fichas encontradas</p>    
             </form>
@@ -129,10 +183,32 @@
         });
     });
 
+    fondo.addEventListener('click', ocultarFicha);
     function showFicha(ficha){
-        fondo.style.display = 'flex';
-        tarjeta.focus();
+        fondo.style.display = 'block';
+        card.style.display = 'block';
+
+        card.className = 'tarjeta '+ficha.tipo;
+        nivel.src = `../public/img/${ficha.level}.png`;
+        // btnBorrar.addEventListener('click', () => borrar(ficha));
+        txtEsp.innerHTML = ficha.esp;
         // crearficha() poner la info
     }
-    fondo.addEventListener('click', () => fondo.style.display = 'none');
+    function ocultarFicha(){
+        fondo.style.display = 'none';
+        card.style.display = 'none';
+    }
+    function borrar(ficha){
+        if(confirm(`¿Seguro que quieres borrar la tarjeta "${ficha.esp}"?`)){
+            msgBox.innerHTML = 'Cargando...';
+            fetch('/borrar', {
+                method: 'POST', 
+                body: ficha.id
+            })
+            .then(e => e.text()).then(data => {
+                colaMsg.add('Ficha borrada con éxito.');
+                ocultarFicha();
+            });
+        }
+    }
 </script>
