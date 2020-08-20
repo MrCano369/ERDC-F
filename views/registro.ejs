@@ -11,15 +11,18 @@
     <%- include('elements', { user }) %>
 
     <div class="page center">
-        <h2>Inicio de sesión</h2>
+        <h2>Registro</h2>
 
         <form id="frm">
             <p>Nombre de usuario</p>
             <input type="text" name="nombre" required>
+            <p>Correo electrónico</p>
+            <input type="email" name="correo" required>
             <p>Contraseña</p>
             <input type="password" name="clave" required>
-            <button>Acceder</button>
-            <p>Si no tienes cuenta <a href="/registro">regístrate</a>.</p>
+            <p>Repita su contraseña</p>
+            <input type="password" id="clave2" required>
+            <button>Enviar</button>
         </form>
     </div>
     
@@ -29,11 +32,16 @@
 <script>
     colaMsg.add('Introduzca sus datos por favor.');
 
+    clave2.addEventListener('input', () => { // arreglar
+        if (frm.clave.value != clave2.value) clave2.setCustomValidity("Las contraseñas no coinciden");
+        else frm.clave2.setCustomValidity("");
+    });
+
     frm.addEventListener('submit', e => {
         e.preventDefault();
         msgBox.innerHTML = 'Cargando...';
 
-        fetch('/', {
+        fetch('/registro', {
             method: 'POST',
             body: JSON.stringify(Object.fromEntries(new FormData(frm))),
             headers: { 'content-type': "application/json" }
@@ -41,14 +49,14 @@
         .then(e => e.text()).then(data => {
             switch(data){
                 case '1':
-                    colaMsg.add('El usuario no existe.');
+                    colaMsg.add('El nombre de usuario ya está en uso.');
                     frm.nombre.value = '';
                     frm.nombre.focus();
                 break;
                 case '2':
-                    colaMsg.add('Contraseña incorrecta.');
-                    frm.clave.value = '';
-                    frm.clave.focus();
+                    colaMsg.add('El correo electrónico ya está en uso.');
+                    frm.correo.value = '';
+                    frm.correo.focus();
                 break;
                 case 'ok':
                     location.href = '/inicio';

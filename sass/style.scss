@@ -24,8 +24,8 @@ h2{
     background-color: #BA4A00;
     border-radius: 0px 0px 15px 15px;
     color: white;
-    top: 0;
-    left: 10;
+    top: 0px;
+    left: 10px;
     z-index: -1;
 }
 .header, .footer{
@@ -106,14 +106,15 @@ h2{
     height: 100%;
     overflow-y: auto;
     position: relative;
-    display: flex;
+    text-align: justify;
     padding: 40px 5px 5px 5px;
 }
+.center{ display: flex; }
 form{
     width: 300px;
-    margin: auto;
     text-align: center;
     font-size: 25px;
+    margin: auto;
     input, select, button{
         width: 200px;
         text-align: center;
@@ -128,7 +129,7 @@ form{
         color: white;
         cursor: pointer;
         padding: 5px;
-        margin: 10px 0px;
+        margin-top: 10px;
         &:hover{ border-style: inset; }
     }
 }

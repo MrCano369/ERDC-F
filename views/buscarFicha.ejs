@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="../public/style.css">
+    <style>
+        f{
+            text-align: center;
+            position: relative;
+        }
+        h{
+            position: absolute;
+            line-height: 0px;
+            font-size: 25%;
+            width: 100%;
+            white-space: nowrap;
+            font-weight: bold;
+            transform: scale(1.3);
+            user-select: none;
+        }
+        #tbl{
+            color: white;
+            height: 100%;
+            width: 100%;
+            border-collapse: collapse;
+        }
+        #tbl tr[tipo='sus']{ background-color: #8E44AD; }
+        #tbl tr[tipo='vrb']{ background-color: #2ECC71; }
+        #tbl tr[tipo='adj']{ background-color: #F4D03F; }
+        #tbl tr[tipo='adv']{ background-color: #2980B9; }
+        
+        #tbl tr:hover{
+            cursor: pointer;
+            filter: brightness(0.9);
+        }
+
+        form button{
+            width: min-content;
+            margin: 0px;
+            vertical-align: bottom;
+            display: inline-flex;
+        }
+        form input{
+            height: 36px;
+        }
+        
+        .content{
+            height: 100%;
+        }
+        .results{
+            overflow-y: auto;
+            height: calc(100% - 70px);
+            border: 2px inset #DC7633;
+        }
+
+        #fondo{
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.5);
+            top: 0px;
+            left: 0px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        #tarjeta{
+            width: 300px;
+            height: 200px;
+            background-color: white;
+        }
+        </style>
+    <title>Buscar Ficha</title>
+</head>
+<body>
+    <%- include('elements', { user }) %>
+
+    <div class="page">
+
+        <div id="fondo">
+            <div id="tarjeta"></div>
+        </div>
+
+        <h2>Buscar Ficha</h2>
+
+        <div class="content">
+            
+            <form id="frm">
+                <input type="text" name="buscar">
+                <button><img src="../public/img/buscar.svg" height="20"></button>
+                <p><span id="cant">0</span> fichas encontradas</p>    
+            </form>
+            <div class="results">
+                <table  id="tbl"></table>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>
+<script src="../views/actions.js"></script>
+<script>
+    colaMsg.add('Buscar por término en español o en el otro idioma.');
+    //colaMsg.add('Para escribir con furigana escribe de esta forma (hiragana,kanji), por ejemplo: (わたし,私).');
+
+    frm.addEventListener('submit', e => {
+        e.preventDefault();
+        msgBox.innerHTML = 'Cargando...';
+
+        fetch('/buscar', {
+            method: 'POST',
+            body: JSON.stringify(Object.fromEntries(new FormData(frm))),
+            headers: { 'content-type': "application/json" }
+        })
+        .then(e => e.json()).then(data => {
+            console.log(data);
+            cant.innerText = data.length;
+            colaMsg.add(data.length+' fichas encontradas.');
+            
+            tbl.innerHTML = "";
+            data.forEach( ficha => {
+                let row = tbl.insertRow();
+                row.setAttribute('tipo', ficha.tipo);
+                row.addEventListener('click', () => showFicha(ficha));
+                row.insertCell(-1).innerText = ficha.esp;
+                row.insertCell(-1).innerText = ficha.ext;
+			});
+        });
+    });
+
+    function showFicha(ficha){
+        fondo.style.display = 'flex';
+        tarjeta.focus();
+        // crearficha() poner la info
+    }
+    fondo.addEventListener('click', () => fondo.style.display = 'none');
+</script>

@@ -39,10 +39,10 @@ function toFurigana(str){
 function showMenu(){
     menu.style.transform = 'translateX(0px)';
     nada.style.display = 'block';
-    document.body.style.overflowY = 'hidden';
+    //document.body.style.overflowY = 'hidden';
 }
 function quitarMenu(){
     menu.style.transform = 'translateX(-200px)';
     nada.style.display = 'none';
-    document.body.style.overflowY = 'auto';
+    //document.body.style.overflowY = 'auto';
 }

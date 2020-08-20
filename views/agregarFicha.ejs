@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="../public/style.css">
+    <style>
+        f{
+            text-align: center;
+            position: relative;
+        }
+        h{
+            position: absolute;
+            line-height: 0px;
+            font-size: 25%;
+            width: 100%;
+            white-space: nowrap;
+            font-weight: bold;
+            transform: scale(1.3);
+            user-select: none;
+        }
+        .sus div{border-color: #8E44AD;}
+        .sus div h{color: #8E44AD;}
+        .vrb div{border-color: #2ECC71;}
+        .vrb div h{color: #2ECC71;}
+        .adj div{border-color: #F4D03F;}
+        .adj div h{color: #F4D03F;}
+        .adv div{border-color: #2980B9;}
+        .adv div h{color: #2980B9;}
+        .fra div{border-color: #DC7633;}
+        .fra div h{color: #DC7633;}
+        .tarjeta{
+            width: 300px;
+            height: 200px;
+            
+            transform-style: preserve-3d;
+            font-size: 35px;
+            /* display: block; */
+            margin: 10px auto 0px auto;
+            transition: 1s;
+        }
+        
+        .tarjeta div{
+            width: 100%;
+            height: 100%;
+    
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+    
+            border-width: 10px;
+            border-radius: 25px;
+            border-style: outset;
+    
+            padding: 7px;
+            background-color: white;
+            position: absolute;
+            backface-visibility: hidden;
+        }
+        .reverso{
+            transform: rotateY(180deg);
+        }
+        .tarjeta div label{
+            width: 100%;
+            text-align: center;
+        }
+        .tarjeta div img{
+            height: 25px;
+            cursor: pointer;
+            user-select: none;
+        }
+        </style>
+    <title>Agregar Ficha</title>
+</head>
+<body>
+    <%- include('elements', { user }) %>
+
+    <div class="page center">
+        <h2>Agregar Ficha</h2>
+
+        <form id="frm">
+            <p>Término en español</p>
+            <input type="text" name="esp" required placeholder="Manzana">
+            <p>Término en el otro idioma</p>
+            <input type="text" name="ext" required placeholder="Apple">
+            <p>Tipo de término</p>
+            <select name="tipo" required>
+                <option value="sus">Sustantivo</option>
+                <option value="adj">Adjetivo</option>
+                <option value="vrb">Verbo</option>
+                <option value="adv">Adverbio</option>
+            </select>
+
+            <div class="tarjeta sus" id="card">
+                <div class="anverso">
+                    <img src="../public/img/girar.png" id="btnGirar1">
+                    <label id="txtEsp">Manzana</label>
+                </div>
+                <div class="reverso">
+                    <img src="../public/img/girar.png" id="btnGirar2">
+                    <label id="txtExt">Apple</label>
+                </div>
+            </div>
+
+            <button>Agregar</button>
+        </form>
+        
+    </div>
+    
+</body>
+</html>
+<script src="../views/actions.js"></script>
+<script>
+    colaMsg.add('Consejo: puedes escribir una frase en una ficha, no solo palabras.');
+    //colaMsg.add('Para escribir con furigana escribe de esta forma (hiragana,kanji), por ejemplo: (わたし,私).');
+
+    btnGirar1.addEventListener('click', () => card.style.transform = 'rotateY(180deg)' );
+    btnGirar2.addEventListener('click', () => card.style.transform = 'rotateY(0deg)' );
+
+    frm.esp.addEventListener('keyup', () => txtEsp.innerHTML = frm.esp.value );
+    frm.ext.addEventListener('keyup', () => txtExt.innerHTML = toFurigana(frm.ext.value) );
+    frm.tipo.addEventListener('change', () => card.className = 'tarjeta ' + frm.tipo.value );
+
+    frm.addEventListener('submit', e => {
+        e.preventDefault();
+        msgBox.innerHTML = 'Cargando...';
+        fetch('/agregar', {
+            method: 'POST',
+            body: JSON.stringify(Object.fromEntries(new FormData(frm))),
+            headers: { 'content-type': "application/json" }
+        })
+        .then(e => e.text()).then(data => {
+            cant.innerText++;
+            colaMsg.add('Ficha agregada con éxito.');
+            colaMsg.add('Cuando tengas 20 fichas nuevas podrás repasarlas.');
+            frm.esp.value = '';
+            frm.ext.value = '';
+            txtEsp.innerText = 'Muestra';
+            txtExt.innerText = 'Sample';
+        });
+    });
+</script>

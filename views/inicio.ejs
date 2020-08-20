@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="../public/style.css">
+    <title>Inicio</title>
+</head>
+<body>
+    <%- include('elements', { user }) %>
+
+    <div class="page">
+        <h2>Inicio</h2>
+
+        <p>Hola y bienvenido a la mas nueva versión de <b>El rincón de Cano</b> en la que podrás disfrutar de diversas actividades asi como ganar <b>CanoCoins</b> que podrás canjear por ropa para tu avatar.</p>
+        <img src="../public/img/img1.jpg" width="100%">
+        <img src="../public/img/img2.jpg" width="100%">
+        <img src="../public/img/img3.jpg" width="100%">
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi corrupti excepturi sunt repudiandae dignissimos? Ipsum nostrum debitis perspiciatis nam expedita, eum ducimus, fugit illum nisi et officiis. Odit quae voluptatum, iure assumenda, vitae itaque sequi est ea vero perspiciatis minus similique accusantium nulla labore reprehenderit eum officia? Nostrum nam non, numquam aut similique, debitis inventore quo, reprehenderit fugit iure quidem molestiae dolorem facere aliquid libero illum fugiat itaque magnam omnis iusto quos eveniet optio. Consequuntur accusantium illo architecto alias optio quisquam nulla, libero cumque doloremque perspiciatis et provident dolorem labore, quia eos, tempore distinctio? Voluptatibus nobis autem vel repudiandae mollitia ab quaerat reiciendis doloribus aliquid, recusandae sint facere hic inventore possimus iure harum veritatis, rem nostrum praesentium aut natus voluptas dicta dolorum pariatur. Tempora itaque distinctio ipsa quod nisi, ducimus saepe, corporis suscipit unde, sequi quidem. Cumque rerum iste laudantium a recusandae sint totam ducimus, dolores exercitationem tempora at quo harum corrupti eligendi maxime necessitatibus sunt molestias unde voluptatem enim? Ipsum eius atque error quo officia consequatur sunt architecto tempore repellendus. Non iste rem officia eveniet quis fuga quod magnam numquam odio consequatur tempora, quia sequi ipsum quaerat ducimus earum inventore delectus modi corrupti fugiat cupiditate? Molestias ut ducimus repellat!</p>
+    </div>
+    <input type="hidden" id="user" value="<%= user %>">
+</body>
+</html>
+<script src="../views/actions.js"></script>
+<script>
+    console.log(user.value);
+    colaMsg.add('Hola maestro, yo soy ikaros y sere tu asistente.');
+</script>

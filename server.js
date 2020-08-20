@@ -43,14 +43,13 @@ app.use(express.json());
 app.use((req, res, next) => {
     switch(req.url) {
         case '/':
-        case '/login':
         case '/registro':
             if(user) res.redirect('/inicio');
             else next();
         break;
         default:
             if(user) next();
-            else res.redirect('/login');
+            else res.redirect('/');
     }
 });
 
@@ -68,7 +67,7 @@ app.get('/salir', (req, res) => {
 
 
 // res
-app.post('/login', async (req, res) => {
+app.post('/', async (req, res) => {
     var loginUser = await Usuario.findOne({ nombre: req.body.nombre });
     if(loginUser){
         if(loginUser.clave == req.body.clave){
@@ -91,5 +90,21 @@ app.post('/registro', async (req, res) => {
     }
 });
 
+app.post('/agregar', async (req, res) => {
+    //console.log(req.body);
+    var Ficha = mongoose.model(user.nombre+'_ficha', esquemaFicha);
+    await new Ficha(req.body).save();
+    res.send('ok');
+});
+
+app.post('/buscar', async (req, res) => {
+    //console.log(req.body);
+    var Ficha = mongoose.model(user.nombre+'_ficha', esquemaFicha);
+    var query = await Ficha.find().or([
+        {esp: new RegExp(req.body.buscar, 'i')},
+        {ext: new RegExp(req.body.buscar, 'i')}
+    ]);
+    res.send(query);
+});
 
 app.listen(process.env.PORT || 3000, () => console.log('Server funcionando'));
