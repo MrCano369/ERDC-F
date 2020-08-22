@@ -4,7 +4,7 @@ const app = express();
 var user = null;
 
 // bdd
-mongoose.connect("mongodb+srv://MrCano369:acr3945@mrcano369-sbz3s.mongodb.net/test?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect("mongodb+srv://MrCano369:acr3945@mrcano369-sbz3s.mongodb.net/test?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
 var Schema = mongoose.Schema;
 var esquemaUsuario = new Schema({
     nombre: String,
@@ -109,7 +109,16 @@ app.post('/buscar', async (req, res) => {
 
 app.post('/borrar', async (req, res) => {
     console.log(req.body);
+    var Ficha = mongoose.model(user.nombre+'_ficha', esquemaFicha);
     res.send('pene');
+});
+
+app.post('/editar', async (req, res) => {
+    console.log(req.body);
+    var Ficha = mongoose.model(user.nombre+'_ficha', esquemaFicha);
+    await Ficha.findByIdAndUpdate(req.body.id, req.body);
+    res.send('ok');
+
 });
 
 app.listen(process.env.PORT || 3000, () => console.log('Server funcionando'));

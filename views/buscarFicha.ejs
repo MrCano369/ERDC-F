@@ -65,12 +65,20 @@
         }
         .sus div{border-color: #8E44AD;}
         .sus div h{color: #8E44AD;}
+        .sus input, .sus select{ border-color: #8E44AD }
+
         .vrb div{border-color: #2ECC71;}
         .vrb div h{color: #2ECC71;}
+        .vrb input, .vrb select{ border-color: #2ECC71 }
+
         .adj div{border-color: #F4D03F;}
         .adj div h{color: #F4D03F;}
+        .adj input, .adj select{ border-color: #F4D03F }
+
         .adv div{border-color: #2980B9;}
         .adv div h{color: #2980B9;}
+        .adv input, .adv select{ border-color: #2980B9 }
+
         .fra div{border-color: #DC7633;}
         .fra div h{color: #DC7633;}
         #card{
@@ -87,6 +95,7 @@
             left: 0;
             right: 0;
             margin: auto;
+            transition: 1s;
         }
         #card div{
             width: 100%;
@@ -94,16 +103,22 @@
     
             display: flex;
             justify-content: space-between;
-            align-content: space-between;
             flex-wrap: wrap;
     
             border-width: 10px;
             border-radius: 25px;
             border-style: outset;
-    
+
             padding: 7px;
             background-color: white;
             position: absolute;
+            backface-visibility: hidden;
+        }
+        .anverso{
+            align-content: space-between;
+        }
+        .reverso{
+            transform: rotateY(180deg);
         }
         #card div label{
             width: 100%;
@@ -117,6 +132,17 @@
         #textEdit{
             display: none;
         }
+        #frm2{
+            display: none;
+        }
+        #btnGuardar{
+            position: absolute;
+            right: 7px;
+            bottom: 7px;
+            background-color: transparent;
+            border: none;
+            padding: 0px;
+        }
         </style>
     <title>Buscar Ficha</title>
 </head>
@@ -129,12 +155,30 @@
         </div>
 
         <div id="card">
-            <div>
-                <img src="../public/img/girar.png" id="btnGirar">
+            <div class="anverso">
+                <img src="../public/img/girar.png" id="btnGirar1">
                 <img src="" id="nivel">
-                <label id="text"></label>
-                <img src="../public/img/editar.svg" id="btnEditar">
+                <label id="txtEsp"></label>
+
+                <form id="frm2">
+                    <input type="text" name="esp" required>
+                    <input type="text" name="ext" required>
+                    <input type="hidden" name="id">
+                    <select name="tipo" required>
+                        <option value="sus" id="sus">Sustantivo</option>
+                        <option value="adj" id="adj">Adjetivo</option>
+                        <option value="vrb" id="vrb">Verbo</option>
+                        <option value="adv" id="adv">Adverbio</option>
+                    </select>
+                    <button id="btnGuardar"><img src="../public/img/guardar.svg"></button>
+                </form>
+
                 <img src="../public/img/borrar.svg" id="btnBorrar">
+                <img src="../public/img/editar.svg" id="btnEditar">
+            </div>
+            <div class="reverso">
+                <img src="../public/img/girar.png" id="btnGirar2">
+                <label id="txtExt"></label>
             </div>
         </div>
 
@@ -185,27 +229,18 @@
         });
     });
 
+    var fichaActual;
     fondo.addEventListener('click', ocultarFicha);
-    btnGirar.addEventListener('click', () => girar() );
-
-    function girar(d = 0){
-        if(d < 360){
-            if(d == 90){
-                text.innerHTML = toFurigana(card.anv ? card.ext : card.esp);
-                card.anv = !card.anv;
-                d += 180;
-            }
-            card.style.transform = `rotateY(${d += 2}deg)`;
-            setTimeout(() => girar(d), 5);
-        }else return;
-    }
+    btnGirar1.addEventListener('click', () => card.style.transform = 'rotateY(180deg)' );
+    btnGirar2.addEventListener('click', () => card.style.transform = 'rotateY(0deg)' );
+    frm2.tipo.addEventListener('change', () => card.className = frm2.tipo.value );
 
     btnBorrar.addEventListener('click', () => {
         if(confirm('¿Seguro que quieres borrar esta ficha?')){
             msgBox.innerHTML = 'Cargando...';
             fetch('/borrar', {
                 method: 'POST',
-                body: card.ide
+                body: fichaActual.id
             })
             .then(e => e.text()).then(data => {
                 colaMsg.add('Ficha borrada con éxito.');
@@ -215,34 +250,51 @@
     });
 
     btnEditar.addEventListener('click', () => {
-        if(card.edit){
-            btnEditar.src = '../public/img/editar.svg';
+            btnEditar.style.display = 'none';
 
-        }else{
-            btnEditar.src = '../public/img/guardar.svg';
+            frm2.esp.value = fichaActual.esp;
+            frm2.ext.value = fichaActual.ext;
+            frm2.id.value = fichaActual._id;
+            document.querySelector("#"+fichaActual.tipo).selected = true;
 
-        }
-        
+            txtEsp.style.display = 'none';
+            frm2.style.display = 'block';
     });
 
     function showFicha(ficha){
         fondo.style.display = 'block';
         card.style.display = 'block';
         card.className = ficha.tipo;
-        card.esp = ficha.esp;
-        card.ext = ficha.ext;
-        card.edit = false;
-        
-        card.anv = true;
-        card.ide = ficha.id;
-        text.innerHTML = ficha.esp;
-        nivel.src = `../public/img/${ficha.level}.png`;
 
-        // btnBorrar.addEventListener('click', () => borrar(ficha));
+        txtEsp.innerHTML = ficha.esp;
+        txtExt.innerHTML = toFurigana(ficha.ext);
         
+        fichaActual = ficha;
+        nivel.src = `../public/img/${ficha.level}.png`;
     }
+
     function ocultarFicha(){
         fondo.style.display = 'none';
         card.style.display = 'none';
+
+        btnEditar.style.display = 'block';
+        txtEsp.style.display = 'block';
+        frm2.style.display = 'none';
     }
+
+    frm2.addEventListener('submit', e => {
+        e.preventDefault();
+        msgBox.innerHTML = 'Cargando...';
+        ocultarFicha();
+
+        fetch('/editar', {
+            method: 'POST',
+            body: JSON.stringify(Object.fromEntries(new FormData(frm2))),
+            headers: { 'content-type': "application/json" }
+        })
+        .then(e => e.text()).then(data => {
+            //console.log(data);
+            msgBox.innerHTML = 'Se ha modificado la ficha.';
+        });
+    });
 </script>
