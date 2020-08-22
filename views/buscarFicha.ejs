@@ -16,7 +16,7 @@
             width: 100%;
             white-space: nowrap;
             font-weight: bold;
-            transform: scale(1.3);
+            transform: scale(1.4);
             user-select: none;
         }
         #tbl{
@@ -73,14 +73,13 @@
         .adv div h{color: #2980B9;}
         .fra div{border-color: #DC7633;}
         .fra div h{color: #DC7633;}
-        .tarjeta{
+        #card{
             width: 300px;
             height: 200px;
             
             transform-style: preserve-3d;
             font-size: 35px;
             /* display: block; */
-            transition: 1s;
             display: none;
             position: absolute;
             top: 0;
@@ -89,7 +88,7 @@
             right: 0;
             margin: auto;
         }
-        .tarjeta div{
+        #card div{
             width: 100%;
             height: 100%;
     
@@ -106,14 +105,17 @@
             background-color: white;
             position: absolute;
         }
-        .tarjeta div label{
+        #card div label{
             width: 100%;
             text-align: center;
         }
-        .tarjeta div img{
+        #card div img{
             height: 25px;
             cursor: pointer;
             user-select: none;
+        }
+        #textEdit{
+            display: none;
         }
         </style>
     <title>Buscar Ficha</title>
@@ -126,12 +128,12 @@
         <div id="fondo">
         </div>
 
-        <div class="tarjeta" id="card">
+        <div id="card">
             <div>
                 <img src="../public/img/girar.png" id="btnGirar">
                 <img src="" id="nivel">
+                <label id="text"></label>
                 <img src="../public/img/editar.svg" id="btnEditar">
-                <label id="txtEsp"></label>
                 <img src="../public/img/borrar.svg" id="btnBorrar">
             </div>
         </div>
@@ -168,7 +170,7 @@
             headers: { 'content-type': "application/json" }
         })
         .then(e => e.json()).then(data => {
-            console.log(data);
+            //console.log(data);
             cant.innerText = data.length;
             colaMsg.add(data.length+' fichas encontradas.');
             
@@ -184,31 +186,63 @@
     });
 
     fondo.addEventListener('click', ocultarFicha);
-    function showFicha(ficha){
-        fondo.style.display = 'block';
-        card.style.display = 'block';
+    btnGirar.addEventListener('click', () => girar() );
 
-        card.className = 'tarjeta '+ficha.tipo;
-        nivel.src = `../public/img/${ficha.level}.png`;
-        // btnBorrar.addEventListener('click', () => borrar(ficha));
-        txtEsp.innerHTML = ficha.esp;
-        // crearficha() poner la info
+    function girar(d = 0){
+        if(d < 360){
+            if(d == 90){
+                text.innerHTML = toFurigana(card.anv ? card.ext : card.esp);
+                card.anv = !card.anv;
+                d += 180;
+            }
+            card.style.transform = `rotateY(${d += 2}deg)`;
+            setTimeout(() => girar(d), 5);
+        }else return;
     }
-    function ocultarFicha(){
-        fondo.style.display = 'none';
-        card.style.display = 'none';
-    }
-    function borrar(ficha){
-        if(confirm(`¿Seguro que quieres borrar la tarjeta "${ficha.esp}"?`)){
+
+    btnBorrar.addEventListener('click', () => {
+        if(confirm('¿Seguro que quieres borrar esta ficha?')){
             msgBox.innerHTML = 'Cargando...';
             fetch('/borrar', {
-                method: 'POST', 
-                body: ficha.id
+                method: 'POST',
+                body: card.ide
             })
             .then(e => e.text()).then(data => {
                 colaMsg.add('Ficha borrada con éxito.');
                 ocultarFicha();
             });
         }
+    });
+
+    btnEditar.addEventListener('click', () => {
+        if(card.edit){
+            btnEditar.src = '../public/img/editar.svg';
+
+        }else{
+            btnEditar.src = '../public/img/guardar.svg';
+
+        }
+        
+    });
+
+    function showFicha(ficha){
+        fondo.style.display = 'block';
+        card.style.display = 'block';
+        card.className = ficha.tipo;
+        card.esp = ficha.esp;
+        card.ext = ficha.ext;
+        card.edit = false;
+        
+        card.anv = true;
+        card.ide = ficha.id;
+        text.innerHTML = ficha.esp;
+        nivel.src = `../public/img/${ficha.level}.png`;
+
+        // btnBorrar.addEventListener('click', () => borrar(ficha));
+        
+    }
+    function ocultarFicha(){
+        fondo.style.display = 'none';
+        card.style.display = 'none';
     }
 </script>
